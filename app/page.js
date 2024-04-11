@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import ButtonDemo from '../components/ButtonDemo';
 import ColorPicker from "../components/ColorPicker";
 import PeoplePicker from "../components/PeoplePicker"
+import Tabs from "../components/Tabs";
 
 import { getPeople, getWeatherData, getGeoLocation, getWeatherDataByLatLon } from "../lib/api";
 
@@ -87,20 +88,22 @@ const Homepage = () => {
       <ColorPicker /> */}
       {daysOfWeek && (
         <section>
-          <ul>
-            {daysOfWeek.map((day, index) => {
-              return <li key={index}>{day}</li>
-            })}
-
-          </ul>
-          <div>{weatherData?.list.filter((block) => {
-            const date = new Date(block.dt * 1000);
-            const options = { weekday: "short" };
-            const day = date.toLocaleTimeString("en-US", options);
-            return day === daysOfWeek[activeDayIndex]; // only return days that match current day
-          }).map((key, index) => {
-            return <p key={index}>{block.main.temp}</p>
-          })}</div>
+          <Tabs
+            items={daysOfWeek}
+            clickHandler={setActiveDayIndex}
+            activeIndex={activeDayIndex}
+          />
+          <div>
+            {weatherData?.list
+              .filter((block) => {
+                const date = new Date(block.dt * 1000);
+                const options = { weekday: "short" };
+                const day = date.toLocaleDateString("en-US", options);
+                return day === daysOfWeek[activeDayIndex]; // only return days that match current day
+              }).map((block, index) => {
+                return <p key={index}>{block.main.temp}</p>
+              })}
+          </div>
         </section>)}
     </div>
   );
