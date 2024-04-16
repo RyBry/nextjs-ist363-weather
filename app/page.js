@@ -1,15 +1,22 @@
 "use client"; /* Puts load on client side, not server side. */
 
+// core modules
 import { useState, useEffect } from 'react';
 
-import ButtonDemo from '../components/ButtonDemo';
-import ColorPicker from "../components/ColorPicker";
-import PeoplePicker from "../components/PeoplePicker"
+// nextJS components
+import Image from 'next/image';
+
+// custom components
+import List from "../components/List";
 import Tabs from "../components/Tabs";
 
-import { getPeople, getWeatherData, getGeoLocation, getWeatherDataByLatLon } from "../lib/api";
+import {
+  getPeople,
+  getWeatherData,
+  getGeoLocation,
+  getWeatherDataByLatLon
+} from "../lib/api";
 
-import Image from 'next/image';
 
 const Homepage = () => {
   const [weatherData, setWeatherData] = useState(null);
@@ -86,24 +93,18 @@ const Homepage = () => {
       {/*       <PeoplePicker people={peopleArr} />
       <ButtonDemo />
       <ColorPicker /> */}
-      {daysOfWeek && (
+      {weatherData && daysOfWeek && (
         <section>
           <Tabs
             items={daysOfWeek}
             clickHandler={setActiveDayIndex}
             activeIndex={activeDayIndex}
           />
-          <div>
-            {weatherData?.list
-              .filter((block) => {
-                const date = new Date(block.dt * 1000);
-                const options = { weekday: "short" };
-                const day = date.toLocaleDateString("en-US", options);
-                return day === daysOfWeek[activeDayIndex]; // only return days that match current day
-              }).map((block, index) => {
-                return <p key={index}>{block.main.temp}</p>
-              })}
-          </div>
+          <List
+            activeIndex={activeDayIndex}
+            items={weatherData?.list}
+            daysOfWeek={daysOfWeek}
+          />
         </section>)}
     </div>
   );
