@@ -7,12 +7,13 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 
 // custom components
+import Col from "../components/Col";
+import Row from "../components/Row";
 import List from "../components/List";
 import Tabs from "../components/Tabs";
+import Container from "../components/Container";
 
 import {
-  getPeople,
-  getWeatherData,
   getGeoLocation,
   getWeatherDataByLatLon
 } from "../lib/api";
@@ -24,8 +25,6 @@ const Homepage = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [daysOfWeek, setDaysOfWeek] = useState(null);
   const [activeDayIndex, setActiveDayIndex] = useState(0);
-
-  const peopleArr = getPeople();
 
   /* If null element is provided to dependency list, then effect triggers automatically on startup */
   useEffect(() => {
@@ -79,20 +78,25 @@ const Homepage = () => {
       <h1>Weather app</h1>
       {errorMessage && <div>{errorMessage}</div>}
       {/* Wait until weatherData exists before showing div! */}
-      {weatherData && <div>
-        <h2>{weatherData.city.name}</h2>
-        <p>Current temp: {weatherData.list[0].main.temp}&deg; F</p>
-        <p>{weatherData.list[0].weather[0].description}</p>
-        <Image
-          src={`https://openweathermap.org/img/wn/${weatherData.list[0].weather[0].icon}@2x.png`}
-          alt={`Weather icon`}
-          width={100}
-          height={100} />
-      </div>}
+      {weatherData &&
+        <Container>
+          <Row>
+            <Col>
+              <h2>{weatherData.city.name}</h2>
+              <p>Current temp: {weatherData.list[0].main.temp}&deg; F</p>
+              <p>{weatherData.list[0].weather[0].description}</p>
+              <Image
+                src={`https://openweathermap.org/img/wn/${weatherData.list[0].weather[0].icon}@2x.png`}
+                alt={`Weather icon`}
+                width={100}
+                height={100} />
+            </Col>
+            <Col>
+              Tabs and List goes here
+            </Col>
+          </Row>
+        </Container>}
 
-      {/*       <PeoplePicker people={peopleArr} />
-      <ButtonDemo />
-      <ColorPicker /> */}
       {weatherData && daysOfWeek && (
         <section>
           <Tabs
