@@ -12,14 +12,15 @@ import Row from "../components/Row";
 import List from "../components/List";
 import Tabs from "../components/Tabs";
 import Container from "../components/Container";
+import Temp from "../components/Temp";
 
 import {
   getGeoLocation,
   getWeatherDataByLatLon
 } from "../lib/api";
 
-
 const Homepage = () => {
+  const [loading, setLoading] = useState(true);
   const [weatherData, setWeatherData] = useState(null);
   const [location, setLocation] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -43,6 +44,7 @@ const Homepage = () => {
     const fetchData = async () => {
       const response = await getWeatherDataByLatLon(location);
       setWeatherData(response);
+      setLoading(false);
     };
     /* we declare fetch above---but that doesn't mean we run it! Still need to call directly below. */
     location ? fetchData() : null; /* we have to wait for location to hold something before executing fetch---or errors!. */
@@ -64,26 +66,18 @@ const Homepage = () => {
     // then set state with the das of the week
   }, [weatherData])
 
-  /* For useEffect, supply a function, declare an asynchronous function within, and execute that function, which updates weatherData. Set the side-effect array to weatherData */
-  /*   useEffect(() => {
-      const fetchData = async () => {
-        const response = await getWeatherData();
-        setWeatherData(response);
-      };
-      fetchData();
-    }, [weatherData]); */
-
   return (
     <div>
-      <h1>Weather app</h1>
       {errorMessage && <div>{errorMessage}</div>}
       {/* Wait until weatherData exists before showing div! */}
-      {weatherData &&
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
         <Container>
           <Row>
-            <Col>
+            <Col sm={3} md={4} lg={6}>
               <h2>{weatherData.city.name}</h2>
-              <p>Current temp: {weatherData.list[0].main.temp}&deg; F</p>
+              <Temp size="xl" amount={weatherData.list[0].main.temp} />
               <p>{weatherData.list[0].weather[0].description}</p>
               <Image
                 src={`https://openweathermap.org/img/wn/${weatherData.list[0].weather[0].icon}@2x.png`}
@@ -91,25 +85,23 @@ const Homepage = () => {
                 width={100}
                 height={100} />
             </Col>
-            <Col>
-              Tabs and List goes here
+            <Col sm={9} md={8} lg={6}>
+              {weatherData && daysOfWeek && (
+                <section>
+                  <Tabs
+                    items={daysOfWeek}
+                    clickHandler={setActiveDayIndex}
+                    activeIndex={activeDayIndex}
+                  />
+                  <List
+                    activeIndex={activeDayIndex}
+                    items={weatherData?.list}
+                    daysOfWeek={daysOfWeek}
+                  />
+                </section>)}
             </Col>
           </Row>
-        </Container>}
-
-      {weatherData && daysOfWeek && (
-        <section>
-          <Tabs
-            items={daysOfWeek}
-            clickHandler={setActiveDayIndex}
-            activeIndex={activeDayIndex}
-          />
-          <List
-            activeIndex={activeDayIndex}
-            items={weatherData?.list}
-            daysOfWeek={daysOfWeek}
-          />
-        </section>)}
+        </Container>)}
     </div>
   );
 };

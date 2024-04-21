@@ -1,13 +1,13 @@
 import styles from "./Header.module.scss";
 import Container from "./Container"
 import Row from "./Row";
+import Logo from "./Logo"
 
 const Header = () => {
     return <header className={styles.header}>
         <Container>
-            <Row justifyContent="center" alignItems="center">
-                <p>logo</p>
-                <p>Nav</p>
+            <Row alignItems="center">
+                <Logo />
             </Row>
         </Container>
     </header>
