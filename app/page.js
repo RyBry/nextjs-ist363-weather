@@ -13,6 +13,8 @@ import List from "../components/List";
 import Tabs from "../components/Tabs";
 import Container from "../components/Container";
 import Temp from "../components/Temp";
+import Button from '@/components/Button';
+import Section from "../components/Section";
 
 import {
   getGeoLocation,
@@ -26,6 +28,8 @@ const Homepage = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [daysOfWeek, setDaysOfWeek] = useState(null);
   const [activeDayIndex, setActiveDayIndex] = useState(0);
+  const [tempUnit, setTempUnit] = useState("imperial");
+
 
   /* If null element is provided to dependency list, then effect triggers automatically on startup */
   useEffect(() => {
@@ -67,7 +71,7 @@ const Homepage = () => {
   }, [weatherData])
 
   return (
-    <div>
+    <Section>
       {errorMessage && <div>{errorMessage}</div>}
       {/* Wait until weatherData exists before showing div! */}
       {loading ? (
@@ -77,13 +81,22 @@ const Homepage = () => {
           <Row>
             <Col sm={3} md={4} lg={6}>
               <h2>{weatherData.city.name}</h2>
-              <Temp size="xl" amount={weatherData.list[0].main.temp} />
+              <Temp
+                size="lg"
+                amount={weatherData.list[0].main.temp}
+                unit={tempUnit} />
               <p>{weatherData.list[0].weather[0].description}</p>
               <Image
                 src={`https://openweathermap.org/img/wn/${weatherData.list[0].weather[0].icon}@2x.png`}
                 alt={`Weather icon`}
                 width={100}
                 height={100} />
+              <br />
+              <Button
+                label={`Change to ${tempUnit === "imperial" ? "Celsius" : "Fahreinheit"}`}
+                clickHandler={() => {
+                  setTempUnit(tempUnit === "imperial" ? "metric" : "imperial")
+                }} />
             </Col>
             <Col sm={9} md={8} lg={6}>
               {weatherData && daysOfWeek && (
@@ -97,12 +110,13 @@ const Homepage = () => {
                     activeIndex={activeDayIndex}
                     items={weatherData?.list}
                     daysOfWeek={daysOfWeek}
+                    unit={tempUnit}
                   />
                 </section>)}
             </Col>
           </Row>
         </Container>)}
-    </div>
+    </Section>
   );
 };
 

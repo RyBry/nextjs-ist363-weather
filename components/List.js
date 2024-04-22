@@ -1,8 +1,9 @@
 import Row from "./Row";
 import Col from "./Col";
 import Temp from "./Temp";
+import Image from "next/image"
 
-const List = ({ activeIndex, daysOfWeek, items }) => {
+const List = ({ activeIndex, daysOfWeek, items, unit }) => {
     return (
         <div>
             {items?.filter((block) => {
@@ -18,13 +19,20 @@ const List = ({ activeIndex, daysOfWeek, items }) => {
                 };
                 const time = date.toLocaleString("en-US", options);
                 return (
-                    <Row key={index}>
+                    <Row key={index} borderBottom={1} paddingTop={1} paddingBottom={1}>
                         <Col xs={3} sm={2}>
                             {time}</Col>
                         <Col xs={6} sm={4}>
-                            <Temp amount={block.main.temp}></Temp>
+                            <Temp amount={block.main.temp} unit={unit}></Temp>
+                            <p>{block.weather[0].description}</p>
                         </Col>
-                        <Col xs={3} sm={2}>Icon goes here</Col>
+                        <Col xs={3} sm={2}>
+                            <Image
+                                src={`https://openweathermap.org/img/wn/${block.weather[0].icon}.png`}
+                                alt={`Weather icon`}
+                                width={70}
+                                height={70} />
+                        </Col>
                     </Row>
                 )
             })}
