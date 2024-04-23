@@ -78,6 +78,7 @@
 
 @mixin generateFontSizeClasses($rootFontSize) {
   $multipliers: (
+    xxs: 0.5,
     xs: 0.75,
     sm: 0.9,
     md: 1,

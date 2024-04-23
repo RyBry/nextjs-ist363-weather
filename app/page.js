@@ -29,7 +29,14 @@ const Homepage = () => {
   const [daysOfWeek, setDaysOfWeek] = useState(null);
   const [activeDayIndex, setActiveDayIndex] = useState(0);
   const [tempUnit, setTempUnit] = useState("imperial");
-
+  // California Code
+  const californiaGeoLocation = {
+    coords: {
+      latitude: "37.63063095998117",
+      longitude: "-119.03606767235236",
+    },
+  };
+  const [weatherDataCA, setWeatherDataCA] = useState(null);
 
   /* If null element is provided to dependency list, then effect triggers automatically on startup */
   useEffect(() => {
@@ -47,7 +54,10 @@ const Homepage = () => {
   useEffect(() => {
     const fetchData = async () => {
       const response = await getWeatherDataByLatLon(location);
+      const responseCA = await getWeatherDataByLatLon(californiaGeoLocation);
+      console.log(responseCA);
       setWeatherData(response);
+      setWeatherDataCA(responseCA);
       setLoading(false);
     };
     /* we declare fetch above---but that doesn't mean we run it! Still need to call directly below. */
@@ -97,6 +107,18 @@ const Homepage = () => {
                 clickHandler={() => {
                   setTempUnit(tempUnit === "imperial" ? "metric" : "imperial")
                 }} />
+              <Row paddingTop={2}>
+                <h1>Hello there!</h1>
+                <Row paddingTop={2} alignItems={"justify-content-flex-start"}>
+                  <h2>Did you know that it's currently: "
+                    <Temp size="xxs" amount={weatherDataCA.list[0].main.temp}></Temp>
+                    " at a California ski resort?</h2>
+                </Row>
+                <Row>
+                  {(weatherDataCA.list[0].main.temp > weatherData.list[0].main.temp) ?
+                    "Even a ski resort is warmer than where you live... You should move to CA." : "It's warmer where you are now, but you should move to CA anways."}
+                </Row>
+              </Row>
             </Col>
             <Col sm={9} md={8} lg={6}>
               {weatherData && daysOfWeek && (
